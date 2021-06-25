@@ -1,6 +1,6 @@
 const firstTile = [19588, 13335];
 const zoom = 15;
-let father;
+let container;
 
 const tilesMatrix = [new Array(7), new Array(7), new Array(7)];
 
@@ -67,12 +67,12 @@ const placeTile = (xTile, yTile) => {
   img.src = `https://tile.openstreetmap.org/15/${xTile}/${yTile}.png`;
   img.style.left = tilePos[1] * 256 + "px";
   img.style.top = tilePos[0] * 256 + "px";
-  img.className = "tile";
+  img.classList.add("tile", "disable-interactivity");
   img.dataset.row = tilePos[0];
   img.dataset.column = tilePos[1];
   img.onclick = onTileClick;
   tilesMatrix[tilePos[0]][tilePos[1]] = img;
-  father.appendChild(img);
+  container.appendChild(img);
 };
 
 const init = () => {
@@ -86,6 +86,6 @@ const init = () => {
 };
 
 window.addEventListener("DOMContentLoaded", () => {
-  father = document.getElementById("father");
+  container = document.querySelector(".container");
   init();
 });

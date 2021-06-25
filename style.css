@@ -2,4 +2,24 @@
   position: absolute;
   width: 256px;
   height: 256px;
+  transition: left 0.5s, top 0.5s;
+}
+
+.container {
+  margin: 0 auto;
+  width: 1792px;
+  position: relative;
+}
+
+.disable-interactivity {
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-select: none;
 }
