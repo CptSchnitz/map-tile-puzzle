@@ -1,15 +1,18 @@
-const firstTile = [19588, 13335];
+const topLeftTile = [16369, 10895];
 const zoom = 15;
+const tileSize = 256;
+const rowCount = 3;
+const columnCount = 7;
 let container;
 
-const tilesMatrix = [new Array(7), new Array(7), new Array(7)];
+const tilesMatrix = [...new Array(rowCount)].map(() => (new Array(columnCount)))
 
 const moveTile = (tile, oldPos, newPos) => {
   tilesMatrix[newPos.row][newPos.column] =
     tilesMatrix[oldPos.row][oldPos.column];
   tilesMatrix[oldPos.row][oldPos.column] = undefined;
-  tile.style.left = newPos.column * 256 + "px";
-  tile.style.top = newPos.row * 256 + "px";
+  tile.style.left = newPos.column * tileSize + "px";
+  tile.style.top = newPos.row * tileSize + "px";
   tile.dataset.row = newPos.row;
   tile.dataset.column = newPos.column;
 };
@@ -55,8 +58,8 @@ const findPlaceInMatrix = () => {
   let row;
   let column;
   do {
-    row = Math.floor(Math.random() * 3);
-    column = Math.floor(Math.random() * 7);
+    row = Math.floor(Math.random() * rowCount);
+    column = Math.floor(Math.random() * columnCount);
   } while (tilesMatrix[row][column]);
   return [row, column];
 };
@@ -64,9 +67,9 @@ const findPlaceInMatrix = () => {
 const placeTile = (xTile, yTile) => {
   const tilePos = findPlaceInMatrix();
   const img = document.createElement("img");
-  img.src = `https://tile.openstreetmap.org/15/${xTile}/${yTile}.png`;
-  img.style.left = tilePos[1] * 256 + "px";
-  img.style.top = tilePos[0] * 256 + "px";
+  img.src = `https://tile.openstreetmap.org/${zoom}/${xTile}/${yTile}.png`;
+  img.style.left = tilePos[1] * tileSize + "px";
+  img.style.top = tilePos[0] * tileSize + "px";
   img.classList.add("tile", "disable-interactivity");
   img.dataset.row = tilePos[0];
   img.dataset.column = tilePos[1];
@@ -76,9 +79,9 @@ const placeTile = (xTile, yTile) => {
 };
 
 const init = () => {
-  for (let i = 19588; i <= 19594; i++) {
-    for (let j = 13333; j <= 13335; j++) {
-      if (i != 19588 || j != 13333) {
+  for (let i = topLeftTile[0]; i <= topLeftTile[0] + columnCount - 1; i++) {
+    for (let j = topLeftTile[1]; j <= topLeftTile[1] + rowCount - 1; j++) {
+      if (i != topLeftTile[0] || j != topLeftTile[1]) {
         placeTile(i, j);
       }
     }
