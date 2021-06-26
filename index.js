@@ -5,14 +5,15 @@ const rowCount = 3;
 const columnCount = 7;
 let container;
 
-const tilesMatrix = [...new Array(rowCount)].map(() => (new Array(columnCount)))
+const tilesMatrix = [...new Array(rowCount)].map(() => new Array(columnCount));
 
 const moveTile = (tile, oldPos, newPos) => {
   tilesMatrix[newPos.row][newPos.column] =
     tilesMatrix[oldPos.row][oldPos.column];
   tilesMatrix[oldPos.row][oldPos.column] = undefined;
-  tile.style.left = newPos.column * tileSize + "px";
-  tile.style.top = newPos.row * tileSize + "px";
+  tile.style.transform = `translate3d(${newPos.column * tileSize}px, ${
+    newPos.row * tileSize
+  }px, 0)`;
   tile.dataset.row = newPos.row;
   tile.dataset.column = newPos.column;
 };
@@ -68,8 +69,9 @@ const placeTile = (xTile, yTile) => {
   const tilePos = findPlaceInMatrix();
   const img = document.createElement("img");
   img.src = `https://tile.openstreetmap.org/${zoom}/${xTile}/${yTile}.png`;
-  img.style.left = tilePos[1] * tileSize + "px";
-  img.style.top = tilePos[0] * tileSize + "px";
+  img.style.transform = `translate3d(${tilePos[1] * tileSize}px, ${
+    tilePos[0] * tileSize
+  }px, 0)`;
   img.classList.add("tile", "disable-interactivity");
   img.dataset.row = tilePos[0];
   img.dataset.column = tilePos[1];

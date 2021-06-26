@@ -2,12 +2,14 @@
   position: absolute;
   width: 256px;
   height: 256px;
-  transition: left 0.5s, top 0.5s;
+  transition: transform 0.3s;
 }
 
 .container {
   margin: 0 auto;
   width: 1792px;
+  height: 768px;
+  border: solid black;
   position: relative;
 }
 
