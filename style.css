@@ -31,12 +31,28 @@ body {
   user-select: none;
 }
 
+.map-sources {
+  position: absolute;
+  z-index: 10;
+  background-color: rgba(255, 255, 255, 0.5);
+  left: 2px;
+  bottom: 2px;
+}
+
 .attribution {
   position: absolute;
   z-index: 10;
   background-color: rgba(255, 255, 255, 0.5);
   right: 2px;
   bottom: 2px;
+}
+
+.bottom-container {
+  display: flex;
+}
+
+select {
+  display: block;
 }
 
 .github-block {

@@ -3,9 +3,75 @@ const zoom = 15;
 const tileSize = 256;
 const rowCount = 3;
 const columnCount = 7;
+const sources = {
+  osm: {
+    displayName: 'OpenStreetMap',
+    attribution: '© OpenStreetMap contributors',
+    getter: (zoom, xTile, yTile) =>
+      `https://tile.openstreetmap.org/${zoom}/${xTile}/${yTile}.png`,
+  },
+  opentopo: {
+    displayName: 'OpenTopoMap',
+    attribution:
+      'map data: © OpenStreetMap contributors, SRTM | map style: © OpenTopoMap (CC-BY-SA)',
+    getter: (zoom, xTile, yTile) =>
+      `https://a.tile.opentopomap.org/${zoom}/${xTile}/${yTile}.png`,
+  },
+  cycle: {
+    displayName: 'CycleOSM',
+    attribution: 'CyclOSM v0.6 | Map data © OpenStreetMap contributors',
+    getter: (zoom, xTile, yTile) =>
+      `https://a.tile-cyclosm.openstreetmap.fr/cyclosm/${zoom}/${xTile}/${yTile}.png`,
+  },
+};
+let currentSource = Object.keys(sources)[0];
+
 let container;
 
 const tilesMatrix = [...new Array(rowCount)].map(() => new Array(columnCount));
+
+const updateAttribution = () => {
+  const attribution = document.querySelector('.attribution');
+  attribution.innerText = sources[currentSource].attribution;
+};
+
+const handleMapSourceChange = (e) => {
+  currentSource = e.target.value;
+
+  const tiles = document.querySelectorAll('.container img');
+  for (const tile of tiles) {
+    tile.src = sources[currentSource].getter(
+      zoom,
+      tile.dataset.xTile,
+      tile.dataset.yTile
+    );
+  }
+
+  updateAttribution();
+};
+
+const createMapOptionsRadioButtons = (container) => {
+  for (const [name, options] of Object.entries(sources)) {
+    const radioButton = document.createElement('input');
+    radioButton.type = 'radio';
+    radioButton.name = 'source';
+    radioButton.value = name;
+    radioButton.id = name;
+
+    if (name === currentSource) {
+      radioButton.checked = true;
+    }
+
+    radioButton.addEventListener('change', handleMapSourceChange);
+
+    container.appendChild(radioButton);
+
+    const label = document.createElement('label');
+    label.innerText = options.displayName;
+    label.htmlFor = name;
+    container.appendChild(label);
+  }
+};
 
 const moveTile = (tile, oldPos, newPos) => {
   tilesMatrix[newPos.row][newPos.column] =
@@ -67,14 +133,16 @@ const findPlaceInMatrix = () => {
 
 const placeTile = (xTile, yTile) => {
   const tilePos = findPlaceInMatrix();
-  const img = document.createElement("img");
-  img.src = `https://tile.openstreetmap.org/${zoom}/${xTile}/${yTile}.png`;
+  const img = document.createElement('img');
+  img.src = sources[currentSource].getter(zoom, xTile, yTile);
   img.style.transform = `translate3d(${tilePos[1] * tileSize}px, ${
     tilePos[0] * tileSize
   }px, 0)`;
-  img.classList.add("tile", "disable-interactivity");
+  img.classList.add('tile', 'disable-interactivity');
   img.dataset.row = tilePos[0];
   img.dataset.column = tilePos[1];
+  img.dataset.xTile = xTile;
+  img.dataset.yTile = yTile;
   img.onclick = onTileClick;
   tilesMatrix[tilePos[0]][tilePos[1]] = img;
   container.appendChild(img);
@@ -90,7 +158,17 @@ const init = () => {
   }
 };
 
-window.addEventListener("DOMContentLoaded", () => {
-  container = document.querySelector(".container");
+window.addEventListener('DOMContentLoaded', () => {
+  container = document.querySelector('.container');
+
+  updateAttribution();
+
+  const mapOptionsContainer = document.querySelector('.map-sources');
+  if (Object.entries(sources).length > 1) {
+    createMapOptionsRadioButtons(mapOptionsContainer);
+  } else {
+    mapOptionsContainer.style.display = 'none';
+  }
+
   init();
 });
